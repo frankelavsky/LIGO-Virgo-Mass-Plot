@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<head>
+	<title>Masses of Dead Stars</title>
+	<link rel="SHORTCUT ICON" href="https://ligo.northwestern.edu/media/mass-plot/favicon.PNG" type="image/png" />
+	<link rel="icon" href="https://ligo.northwestern.edu/media/mass-plot/favicon.PNG" type="image/png" />
+
+	<meta charset="utf-8" name="viewport" content="width=device-width; user-scalable=0;">
+	<meta property="og:image" content="https://ligo.northwestern.edu/media/mass-plot/preview.png" />
+
+	<meta property="og:description" content="Thanks to gravitational wave astronomy, the recent discovery of a neutron star merger has created a mysterious and unknown object: is it a black hole or a neutron star? This interactive tool allows the user to view all the known black holes and neutron stars with measured masses. The new entity is likely either the largest neutron star ever recorded, or the smallest black hole." />
+
+	<meta property="og:url" content="https://ligo.northwestern.edu/media/mass-plot/index.html" />
+
+	<meta property="og:title" content="Explore Black Holes and Neutron Stars" />
+
+	<link rel="stylesheet" type="text/css" href="mods/index.css"/>
+	<!-- LOAD DEPENDENCIES -->
+	<script type="text/javascript" src="libs/d3.js"></script>
+	<script type="text/javascript" src="libs/jquery.js"></script>
+	<script type="text/javascript" src="libs/flowtype.js"></script>
+	<script type="text/javascript" src="libs/FileSaver.min.js"></script>
+	<script type="text/javascript" src="libs/canvas-to-blob.min.js"></script>
+</head>
+
+<body>
+	<div class="header">
+		<div class="menu_wrapper hidden">
+			<div class="bar_wrapper">
+				<div class="menu_bar"></div>
+				<div class="menu_bar"></div>
+				<div class="menu_bar bottom"></div>
+			</div>
+			<div class="option_type hidden" id="view">VIEW:
+				<div class="option hidden view selected" id="view_full">Full</div>
+				<div class="option hidden view" id="view_center">Center</div>
+				<div class="option hidden view" id="view_spread">Spread</div>
+				<div class="option hidden view" id="view_split">Split</div>
+				<div class="option hidden view" id="view_cat_one">BH Categories</div>
+				<div class="option hidden view" id="view_cat_two">NS Categories</div>
+			</div>
+			<div class="option_type hidden" id="toggle">TOGGLE:
+				<div class="option hidden toggle selected" id="toggle_bh">Black Holes</div>
+				<div class="option hidden toggle selected" id="toggle_ns">Neutron Stars</div>
+				<div class="option hidden toggle selected" id="toggle_title">Title</div>
+				<div class="option hidden toggle" id="toggle_labels">Labels</div>
+				<div class="option hidden toggle selected" id="toggle_axis">Axis</div>
+				<div class="option hidden toggle selected" id="toggle_merger">Mergers</div>
+				<div class="option hidden toggle" id="toggle_bh_error">BH Error Bars</div>
+				<div class="option hidden toggle" id="toggle_ns_error">NS Error Bars</div>
+				<div class="option hidden toggle" id="toggle_gap">Mass Gap</div>
+			</div>
+			<div class="option_type hidden" id="scale">SCALE:
+				<div class="option hidden scale selected" id="log_scale">Logarithmic</div>
+				<div class="option hidden scale" id="lin_scale">Linear</div>
+			</div>
+			<div class="option_type hidden" id="range">ZOOM:
+				<div id="range_choices">
+					<div class="option hidden range selected" id="full_range">Full</div>
+					<div class="option hidden range" id="ns_range">Neutron Stars</div>
+				</div>
+			</div>
+			<div class="option_type hidden" id="appearance">LOOK:
+				<div id="scheme" class="option hidden appearance">Scheme:<br>
+					<div style="padding-left: 1.5vw"><span id="dark_scheme" class="selected">Dark</span> | <span id="light_scheme">Light</span></div>
+				</div>
+				<div id="radius" class="option hidden appearance">Radius:<br>
+					<div style="padding-left: 1.5vw"><span id="scaled_radius" class="selected">Scale</span> | <span id="set_radius">Equal</span></div>
+				</div>
+				<div id="shading" class="option hidden appearance">Shading: 
+					<div style="padding-left: 1.5vw"><span id="stellar_shade" class="selected">Stellar</span> | <span id="plain_shade">Plain</span></div>
+				</div>
+				<div id="color" class="option hidden appearance">Color-mode: 
+					<div style="padding-left: 1.5vw"><span id="color_blend" class="selected">Blend</span> | <span id="color_normal">None</span></div>
+				</div>
+				<div id="order" class="option hidden appearance">In Front: 
+					<div style="padding-left: 1.5vw"><span id="stars_front" class="selected">Stars</span> | <span id="bars_front">Bars</span></div>
+				</div>
+			</div>
+		</div>
+		<div id="saveButton">Save Image</div>
+	</div>
+	<div id="tilde">
+	</div>
+	<script>
+		$('body').flowtype();
+	</script>
+</body>
+
+<!-- LOAD DATA -->
+<script type="text/javascript" src="mods/datasets.js"></script>
+
+<!-- LOAD MODULES -->
+<script type="text/javascript" src="mods/starters.js"></script>
+<script type="text/javascript" src="mods/helpers.js"></script>
+<script type="text/javascript" src="mods/animations.js"></script>
+<script type="text/javascript" src="mods/exporter.js"></script>
+
+
