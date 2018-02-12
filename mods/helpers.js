@@ -1815,13 +1815,13 @@ tilde.showMergers = function(time) {
 		d3.selectAll(".bh_merger")
 			.transition()
 			.duration(transition)
-			.style("stroke-opacity",.12)
+			.style("stroke-opacity",.25)
 			.style("opacity",1)
 	} else {
 		tilde.starWrapper.selectAll(".merger")
 			.transition()
 			.duration(transition)
-			.style("stroke-opacity",.12)
+			.style("stroke-opacity",.25)
 			.style("opacity",1)
 	}
 }
