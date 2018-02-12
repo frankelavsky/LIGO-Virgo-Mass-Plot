@@ -1579,7 +1579,7 @@ tilde.createArrowData = function() {
 					name: d.name,
 					type: d.type,
 					mergeName: mergeName,
-					thickness: target.attr("r")*0.3,
+					thickness: 1+target.attr("r")*0.2,
 					centered:false,
 					color: function() {
 						if (tilde.light_scheme) {
@@ -1593,7 +1593,7 @@ tilde.createArrowData = function() {
 					name: mergeName,
 					type: d.type,
 					mergeName: mergeName,
-					thickness: target.attr("r")*0.4,
+					thickness: 1+target.attr("r")*0.2,
 					centered:false,
 					color: function() {
 						if (tilde.light_scheme) {
@@ -1607,7 +1607,7 @@ tilde.createArrowData = function() {
 					name: mergeName,
 					type: d.type,
 					mergeName: mergeName,
-					thickness: target.attr("r")*0.4,
+					thickness: 1+target.attr("r")*0.2,
 					centered:false,
 					color: function() {
 						if (tilde.light_scheme) {
@@ -1627,20 +1627,19 @@ tilde.createArrowData = function() {
 					v = arrow_data.values;
 				var offset = Math.sqrt(Math.pow(t_t/2,2)/2)
 				v[3].x = t_x
-				v[3].y = t_y + t_r*1.3+t_t
+				v[3].y = t_y + t_r*2+t_t
 				v[4].x = t_x
 				v[4].y = t_y + t_r*1.1+t_t
 				arrowhead_right.name += "c"
 				arrowhead_right.values = [
 					{
-						x:v[4].x - t_t*1.5,
-						y:v[4].y + t_t
-					},
-					{
 						x:v[4].x + offset,
 						y:v[4].y - offset - t_t/2
+					},
+					{
+						x:v[4].x - t_t*2,
+						y:v[4].y + t_t*1.5
 					}
-					
 				]
 				arrowhead_left.name += "d"
 				arrowhead_left.values = [
@@ -1649,8 +1648,8 @@ tilde.createArrowData = function() {
 						y:v[4].y - offset - t_t/2
 					},
 					{
-						x:v[4].x + t_t*1.5,
-						y:v[4].y + t_t
+						x:v[4].x + t_t*2,
+						y:v[4].y + t_t*1.5
 					}
 				]
 				if (t_x > s_x) {
