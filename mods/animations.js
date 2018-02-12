@@ -249,7 +249,7 @@ tilde.animate.burstStars = function() {
 			return burst_duration+rnd2()*10; 
 		})
 		.delay(function(d,i) { 
-			return	i*20; 
+			return	i*8; 
 		})
 		.attr("x",function(d){
 			d.bar_x = x(d.target_x)-d.error_width/2;
@@ -261,7 +261,7 @@ tilde.animate.burstStars = function() {
 			return burst_duration+rnd2()*10; 
 		})
 		.delay(function(d,i) { 
-			return i; 
+			return i*8; 
 		})
 		.attr("cx", function(d) {
 			d.x = x(d.target_x)
