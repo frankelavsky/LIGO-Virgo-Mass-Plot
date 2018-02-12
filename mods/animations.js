@@ -22,7 +22,7 @@ tilde.animate.placeStars = function() {
 		.style("opacity",0)
 		.transition("type_label_fade_in")
 		.duration(4500)
-		.delay(1200)
+		.delay(2000)
 		.style("opacity",1)
 
 	tilde.notice.remove()
@@ -185,18 +185,17 @@ tilde.animate.placeStars = function() {
 					}
 					return 1
 				})
-				.transition("update_axis").duration(2600).delay(500)
 				.call(tilde.clusterAxis)
 			tilde.styleAxis()
 
 			tilde.svg.select(".y.axis")
-				.transition("show_axis").duration(4800)
+				.transition("show_axis").duration(3800).delay(1500)
 				.style("opacity",1);
 
 			//Remove gooey filter from stars
 			d3.selectAll("#tilde .blurValues")
 				.transition().duration(1500).delay(function(d,i) { 
-					return	star_timing; 
+					return star_timing; 
 				})
 				.attrTween("values", function() { 
 					return d3.interpolateString("1 0 0 0 0	0 1 0 0 0	0 0 1 0 0	0 0 0 18 -5", 

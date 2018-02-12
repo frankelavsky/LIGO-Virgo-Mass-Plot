@@ -7,6 +7,7 @@
 tilde.download_large = document.cookie.indexOf("view_mode=publication")+1 ? true : false;
 
 tilde.normalwidth = $(window).width();
+tilde.largewidth = 2560;
 
 tilde.windowwidth = tilde.normalwidth //tilde.download_large ? tilde.largewidth : tilde.normalwidth
 
@@ -1182,7 +1183,8 @@ tilde.showMenu = function() {
 	d3.selectAll(".menu_wrapper, .download_menu")
 		.style("opacity",0)
 		.classed("hidden",false)
-		.transition("show_menu").duration(3000)
+		.transition("show_menu").duration(4500)
+		.delay(2000)
 		.style("opacity",.9)
 
 	d3.select("#saveButton")
