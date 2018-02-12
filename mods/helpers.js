@@ -124,11 +124,9 @@ tilde.init = function() {
 		container = chart.parent();
 
 	$(window).on("resize", function() {
-		if (!tilde.download_large) {
-			var targetWidth = container.width();
-			chart.attr("width", targetWidth);
-			chart.attr("height", Math.round(targetWidth / aspect));
-		}
+		var targetWidth = container.width();
+		chart.attr("width", targetWidth);
+		chart.attr("height", Math.round(targetWidth / aspect));
 	}).trigger("resize");	
 
 	var width = chart.width() - margin.left - margin.right;

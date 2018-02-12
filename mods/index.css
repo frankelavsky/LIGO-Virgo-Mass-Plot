@@ -176,8 +176,8 @@ body {
 .axis path {
 	fill:none;
 	stroke: #4c4c4c;
-	stroke-opacity: .8;
-	stroke-width:1;
+	stroke-opacity: 1;
+	stroke-width:2;
 	shape-rendering: optimizeSpeed;
 	z-index: -100;
 }
