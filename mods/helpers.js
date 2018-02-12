@@ -7,7 +7,6 @@
 tilde.download_large = document.cookie.indexOf("view_mode=publication")+1 ? true : false;
 
 tilde.normalwidth = $(window).width();
-tilde.largewidth = 2560;
 
 tilde.windowwidth = tilde.normalwidth //tilde.download_large ? tilde.largewidth : tilde.normalwidth
 
