@@ -373,7 +373,7 @@ tilde.init = function() {
 		.attr("y",function(d){
 			return d.y()
 		})
-		.attr("fill","#2E2E2E")
+		.attr("fill","#464646")
 		.attr("id","gap")
 		.call(tilde.gapdrag)
 
@@ -1309,7 +1309,7 @@ tilde.toggleScheme = function() {
 			if (tilde.light_scheme) {
 				return "darkgrey"
 			}
-			return "#2E2E2E"
+			return "#464646"
 		})
 	d3.selectAll(".cat_label")
 		.attr("fill",function(){
