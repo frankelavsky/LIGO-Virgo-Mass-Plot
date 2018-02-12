@@ -552,7 +552,7 @@ tilde.init = function() {
 		})	
 		.text("Galactic Black Holes")
 		.attr("x",function(){
-			return width*.25 - this.getComputedTextLength()/2
+			return width*.35 - this.getComputedTextLength()
 		})
 		.attr("y", function(){
 			return tilde.y(10.1)
@@ -568,10 +568,10 @@ tilde.init = function() {
 		})	
 		.text("Extragalactic Black Holes")
 		.attr("x",function(){
-			return width*.75 - this.getComputedTextLength()/2
+			return width*.80 - this.getComputedTextLength()
 		})
 		.attr("y", function(){
-			return tilde.y(10.1)
+			return tilde.y(40.1)
 		})
 		.classed("hidden",true)
 

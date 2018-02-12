@@ -794,7 +794,7 @@ tilde.animate.rescaleView = function(reset,callback) {
 		.transition("move_bh_labels")
 		.duration(misc_speed)
 		.attr("y", function(){
-			return tilde.y(10.1)
+			return (this.id === 'galactic') ? tilde.y(10.1) : tilde.y(40.1)
 		})
 
 	d3.selectAll(".ns_label")
