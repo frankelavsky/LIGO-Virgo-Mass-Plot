@@ -1433,11 +1433,13 @@ tilde.showTip = function(d) {
 	d3.event.stopPropagation()
 	tilde.tooltip
 		.html(menu_tips[this.id])
+		.style('opacity',function(){
+			return (tilde.tooltip.style('display')==='none') ? 0 : 1
+		})
 		.style("display", "inline-block")
-		.style('opacity',0)
 		.transition('tooltip')
 		.duration(250)
-		.delay(250)
+		.delay(200)
 		.style('opacity',1);
 
 	var w = tilde.tooltip[0][0].offsetWidth/5,
