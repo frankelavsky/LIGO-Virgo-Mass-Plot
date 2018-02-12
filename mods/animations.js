@@ -33,11 +33,11 @@ tilde.animate.placeStars = function() {
 	var starColor = tilde.starColor;
 	var starOpacity = tilde.starOpacity;
 	var w = tilde.width;
-	var radial_timing = 3500;
-	var star_timing = 3000;
-	var radial_delay = 500;
-	var blend_delay = 800;
-	var dim_delay = 400;
+	var radial_timing = 4500;
+	var star_timing = 4000;
+	var radial_delay = 1000;
+	var blend_delay = 1200;
+	var dim_delay = 800;
 
 	var min = d3.min(mass_data, function(d) { return d.target_x; });
 	var max = d3.max(mass_data, function(d) { return d.target_x; });
@@ -48,14 +48,13 @@ tilde.animate.placeStars = function() {
 
 	//Put the stars in their location
 	d3.selectAll("#tilde .stars")
-		.transition("blep").delay(200)
+		.transition("blep")
 		.call(endall, function() {	 
 			//Make the cover circle shrink
 
 			tilde.starCoverRemoved = 1;
 			d3.selectAll(".starCover")
-				.transition().duration(4500)
-				.delay(350)
+				.transition().duration(1800).delay(2200)
 				.attr("r", 0)
 				.call(endall, function() {
 					d3.selectAll(".starCover").remove()
@@ -186,12 +185,12 @@ tilde.animate.placeStars = function() {
 					}
 					return 1
 				})
-				.transition("update_axis").duration(2500).delay(500)
+				.transition("update_axis").duration(2600).delay(500)
 				.call(tilde.clusterAxis)
 			tilde.styleAxis()
 
 			tilde.svg.select(".y.axis")
-				.transition("show_axis").duration(3000)
+				.transition("show_axis").duration(4800)
 				.style("opacity",1);
 
 			//Remove gooey filter from stars

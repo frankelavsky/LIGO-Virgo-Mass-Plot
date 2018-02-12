@@ -77,9 +77,18 @@
 				</div>
 			</div>
 		</div>
-		<div id="saveButton">Save Image</div>
+		<div class="download_menu hidden">
+			<div id="saveButton" class='image_button'>Save Image</div>
+			<div id="sizeButton" class='image_button'>
+				<span id="web_size" class="selected">Web</span> | <span id="large_size">Large</span>
+			</div>
+		</div>
 	</div>
 	<div id="tilde">
+	</div>
+	<div class="overlay" style='display:none'>
+		<div class="progress">Tutorial?</div>
+		<div class="loading"></div>
 	</div>
 	<script>
 		$('body').flowtype();

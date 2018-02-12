@@ -31,7 +31,7 @@ body {
 
 .question_mark {
 	font-weight: bold;
-	color:#EAEAEA;
+	fill:#101010;
 }
 
 .gap_text {
@@ -46,14 +46,6 @@ body {
 
 .starCover {
 	fill:#988FBF;
-}
-
-.starCover:hover,focus {
-	cursor: pointer;
-}
-
-.starCover:active {
-	fill: lemonchiffon;
 }
 
 #guide {
@@ -91,22 +83,27 @@ body {
 	display:inline-block;
 }
 
-#saveButton {
-	color:#AFAFAF;
+.download_menu {
+	top: .5vw;
 	position:absolute;
+	display:inline-block;
 	right:3%; 
 	z-index: 9999;
-	top: 1vw; 
-	display:inline-block;
-	font-size:30%;
+	text-align: right;
 }
 
-#saveButton:hover,focus {
+.image_button {
+	color:#AFAFAF;
+	font-size:30%;
+	margin:.5vw;
+}
+
+.image_button:hover,focus {
 	cursor:pointer;
 	color:#7FCECD;
 }
 
-#saveButton:active {
+.image_button:active {
 	background-color: #202020;
 }
 
@@ -179,7 +176,8 @@ body {
 .axis path {
 	fill:none;
 	stroke: #4c4c4c;
-	stroke-opacity: 1;
+	stroke-opacity: .8;
+	stroke-width:1;
 	shape-rendering: optimizeSpeed;
 	z-index: -100;
 }
@@ -204,6 +202,7 @@ body {
 	padding: 2px;
 	text-align: center;
 	z-index: 9999;
+	max-width: 17vw;
 }
 
 .notice {
@@ -221,3 +220,45 @@ body {
 .label {
 	font-size: 30%
 }
+
+.progress {
+	position: fixed;
+	top:50%;
+	left:50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	font-size: 24px;
+	color: #4e2a84;
+	font-weight: bold;
+	z-index: 1000;
+}
+
+.loading {
+	content: "";
+	position: fixed;
+	/* element stretched to cover during rotation an aspect ratio up to 1/10 */
+	top: -800%;
+	left: -800%;
+	right: -800%;
+	bottom: -800%;
+	width:500%;
+	height:500%;
+	z-index: 999;
+	pointer-events: all; /* to block content use: all */
+}
+
+div.loading:after {
+	content: "";
+	position: fixed;
+	/* element stretched to cover during rotation an aspect ratio up to 1/10 */
+	top: -800%;
+	left: -800%;
+	right: -800%;
+	bottom: -800%;
+	z-index: 999;
+	pointer-events: all; /* to block content use: all */
+	/* background */
+	background-color: rgba(0,0,0,0.6);
+	background-position: center center;
+	background-size: 200px 200px;
+}​

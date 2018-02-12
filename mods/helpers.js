@@ -4,10 +4,20 @@
 //	- Also thanks to LIGO, CIERA, and all astrophysicists who have provided the data (see dataset.js for sources)
 */
 
-tilde.windowwidth = $(window).width();
+tilde.download_large = document.cookie.indexOf("view_mode=publication")+1 ? true : false;
+
+tilde.normalwidth = $(window).width();
+tilde.largewidth = 2560;
+
+tilde.windowwidth = tilde.normalwidth //tilde.download_large ? tilde.largewidth : tilde.normalwidth
+
 tilde.shortheight = tilde.windowwidth/(2/0.95); //using this, not $(window).height() because of browsers' aspect/viewport problems. 
 tilde.tallheight = tilde.windowwidth/1.45; // For excellent image output
-tilde.windowheight = tilde.shortheight;
+
+tilde.windowheight = tilde.download_large ? tilde.tallheight : tilde.shortheight
+
+d3.select("#web_size").classed("selected",!tilde.download_large)
+d3.select("#large_size").classed("selected",tilde.download_large)
 
 tilde.data = [];
 tilde.view_points = [];
@@ -114,9 +124,11 @@ tilde.init = function() {
 		container = chart.parent();
 
 	$(window).on("resize", function() {
+		if (!tilde.download_large) {
 			var targetWidth = container.width();
 			chart.attr("width", targetWidth);
 			chart.attr("height", Math.round(targetWidth / aspect));
+		}
 	}).trigger("resize");	
 
 	var width = chart.width() - margin.left - margin.right;
@@ -476,7 +488,7 @@ tilde.init = function() {
 			d.circle_element = this;
 		});
 
-	tilde.coverCirleRadius = tilde.rScale(80);
+	tilde.coverCirleRadius = tilde.rScale(100);
 
 	//Circle over all others
 	tilde.starWrapper.append("circle")
@@ -484,12 +496,12 @@ tilde.init = function() {
 		.attr("r", tilde.rScale(10))
 		.attr("cx", width/2)
 		.attr("cy", height/2)
-		.on("click",tilde.animate.placeStars)
-		.transition().duration(1500)
+		.transition().duration(2000)
 		.attr("r", tilde.coverCirleRadius)
 		.call(endall, function(d){
-			tilde.coverCircleShrink()
-			tilde.unlock();
+			tilde.unlock()
+			tilde.animate.placeStars()
+			//tilde.coverCircleShrink()
 		});
 
 	var q_data = [{}]
@@ -1168,11 +1180,20 @@ tilde.toggleAxis = function() {
 }
 
 tilde.showMenu = function() {
-	d3.select(".menu_wrapper")
+	d3.selectAll(".menu_wrapper, .download_menu")
 		.style("opacity",0)
 		.classed("hidden",false)
 		.transition("show_menu").duration(3000)
 		.style("opacity",.9)
+
+	d3.select("#saveButton")
+		.on("mousemove",tilde.saveTip)
+		.on("mouseout",tilde.mouseout)
+
+	d3.select("#sizeButton")
+		.on("mousemove",tilde.sizeTip)
+		.on("mouseout",tilde.mouseout)
+		.on("click",tilde.checkSizeChange)
 }
 
 tilde.toggleMenu = function() {
@@ -1361,7 +1382,8 @@ tilde.mousemove = function(d) {
 
 	tilde.tooltip
 		.html("<b>"+d.display_name+"</b>: "+d.mass+" Solar Masses"+"<br>"+error_range+"<br>Messenger: "+d.messenger+"<br>Category: "+category)
-		.style("display", "inline-block");
+		.style("display", "inline-block")
+
 
 	var w = tilde.tooltip[0][0].offsetWidth/2,
 		h = tilde.tooltip[0][0].offsetHeight*1.1;
@@ -1375,6 +1397,74 @@ tilde.mouseout = function(d) {
 	tilde.tooltip
 		.style("display", "none");
 };
+
+tilde.saveTip = function(d) {
+	var add = ""
+	if (tilde.windowwidth < 1000) {
+		add = "<br>---<br><i>The current viewport width is:</i> "+tilde.normalwidth+"<br>Recommended is at least <b>1000</b> for quality output."
+	}
+	var suggest_large = "Saving for a publication?<br>Try setting 'Resolution' to <b>Large</b> below.",
+		suggest_web = "Having trouble viewing?<br>Try setting 'Resolution' to <b>Web</b> below.",
+		text = document.cookie.indexOf('publication')+1 ? suggest_web : suggest_large;
+
+	tilde.tooltip
+		.html(text+add)
+		.style("display", "inline-block")
+
+	var w = tilde.tooltip[0][0].offsetWidth*1.1;
+
+	tilde.tooltip
+		.style("left", d3.event.pageX - w + "px")
+		.style("top", d3.event.pageY + "px");
+}
+
+tilde.sizeTip = function(d) {
+	tilde.tooltip
+		.html("This requires a <b>page-reload</b> <br>and <b>cookies enabled</b> to take effect!")
+		.style("display", "inline-block");
+
+	var w = tilde.tooltip[0][0].offsetWidth*1.1;
+
+	tilde.tooltip
+		.style("left", d3.event.pageX - w + "px")
+		.style("top", d3.event.pageY + "px");
+}
+
+tilde.showTip = function(d) {
+	d3.event.stopPropagation()
+	tilde.tooltip
+		.html(menu_tips[this.id])
+		.style("display", "inline-block")
+		.style('opacity',0)
+		.transition('tooltip')
+		.duration(250)
+		.delay(250)
+		.style('opacity',1);
+
+	var w = tilde.tooltip[0][0].offsetWidth/5,
+		h = tilde.tooltip[0][0].offsetHeight/2;
+
+	tilde.tooltip
+		.style("left", d3.event.pageX + w + "px")
+		.style("top", d3.event.pageY - h + "px");
+}
+
+tilde.checkSizeChange = function(d) {
+	if (navigator.cookieEnabled) {
+		if (confirm("Do you wish to reload the page and potentially lose your current settings in order the change the view size?")) {
+			tilde.changeSize()
+		}
+	} else {
+		alert("Your browser does not have cookies enabled.")
+	}
+}
+
+tilde.changeSize = function(d) {
+	var new_cookie = tilde.download_large ? "view_mode=publication;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/" : "view_mode=publication"
+	document.cookie = new_cookie;
+
+	location.reload()
+}
 
 tilde.disableTooltips = function() {
 	tilde.tooltip.remove()
@@ -1434,6 +1524,7 @@ tilde.coverCircleShrink = function() {
 			.attr("r", 0)
 	}
 }
+
 tilde.coverCircleGrow = function() {
 	if (!tilde.starCoverRemoved) {
 		d3.select(".starCover")
@@ -1542,13 +1633,14 @@ tilde.createArrowData = function() {
 				arrowhead_right.name += "c"
 				arrowhead_right.values = [
 					{
-						x:v[4].x + offset,
-						y:v[4].y - offset - t_t/2
-					},
-					{
 						x:v[4].x - t_t*1.5,
 						y:v[4].y + t_t
+					},
+					{
+						x:v[4].x + offset,
+						y:v[4].y - offset - t_t/2
 					}
+					
 				]
 				arrowhead_left.name += "d"
 				arrowhead_left.values = [
@@ -1740,6 +1832,10 @@ tilde.bindOptions = function() {
 
 	d3.selectAll(".option_type")
 		.on("click", tilde.toggleOptions)
+
+	d3.selectAll(".option_type, .option")
+		.on("mousemove",tilde.showTip)
+		.on("mouseout",tilde.mouseout)
 
 	d3.select("#view_full")
 		.on("click",tilde.animate.burstStars)
