@@ -97,6 +97,7 @@ tilde.animate.placeStars = function() {
 				})
 				.call(endall, function() {
 					tilde.unlock()
+					tilde.drawDashes(500)
 					tilde.mergers_shown = true
 					tilde.drawMergers(1200)
 					tilde.moveQuestionMark(800)
@@ -105,7 +106,7 @@ tilde.animate.placeStars = function() {
 					tilde.clicked = 1;
 					tilde.animate.burstStars()	 		
 			 	});
-		 	
+
 		 	d3.selectAll("#tilde .stars")
 				.transition("dim").duration(star_timing)
 				.delay(function(d,i) { 
@@ -207,6 +208,7 @@ tilde.animate.placeStars = function() {
 		.on("mousemove",tilde.mousemove)
 		.on("mouseout",tilde.mouseout)
 		.call(tilde.drag)
+
 };
 
 tilde.animate.burstStars = function() {

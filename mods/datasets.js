@@ -35,6 +35,44 @@ var menu_tips = {
 	"order":"This option only matters if <b>Color-mode</b> is set to <b>Plain</b>, as it determines whether error bars or data points are in front."
 }
 
+var chirp_masses = {
+	"GW150914":{
+		"mass":30,
+		"error_low":0,
+		"error-high":0
+	},
+	"LVT151012":{
+		"mass":15.1,
+		"error_low":1.1,
+		"error-high":1.4
+	},
+	"GW151226":{
+		"mass":8.9,
+		"error_low":0.3,
+		"error-high":0.3
+	},
+	"GW170104":{
+		"mass":21.1,
+		"error_low":2.7,
+		"error-high":2.4
+	},
+	"GW170608":{
+		"mass":7.9,
+		"error_low":0.2,
+		"error-high":0.2
+	},
+	"GW170814":{
+		"mass":24.1,
+		"error_low":1.1,
+		"error-high":1.4
+	},
+	"GW170817":{
+		"mass":1.188,
+		"error_low":0.002,
+		"error-high":0.004
+	}
+}
+
 var preset_data = [
 	/*{
 		"mass": 2.631,

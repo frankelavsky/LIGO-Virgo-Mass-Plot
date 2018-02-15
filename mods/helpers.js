@@ -478,6 +478,19 @@ tilde.init = function() {
 			}
 			return false
 		})
+		.classed("lvt", function(d){
+			var me = this
+			if (d.name.substring(0,3) === "LVT") {
+				d.strokewidth = function(){
+					return d3.select(me).attr("r")/6
+				}
+				d.dash = function(){
+					return d3.select(me).attr("r")/2.3
+				}
+				return true
+			}
+			return false
+		})
 		.attr("r", function(d) { return tilde.rScale(10) ;})
 		.attr("cx", width/2)
 		.attr("cy", height/2)
@@ -978,17 +991,20 @@ tilde.toggleRadius = function() {
 	tilde.stop()
 	tilde.scaled = !tilde.scaled;
 
+	var speed = 800;
+
 	d3.select("#scaled_radius").classed("selected", tilde.scaled)
 	d3.select("#set_radius").classed("selected", !tilde.scaled)
 
 	d3.selectAll(".stars")
 		.transition("radius_resize")
-		.duration(800)
+		.duration(speed)
 		.attr("r",function(d){
 			return tilde.rScale(d.mass)
 		})
 		.call(endall,function(d){
 			tilde.drawMergers()
+			tilde.drawDashes(speed)
 			tilde.moveQuestionMark()
 		})
 }
@@ -1025,6 +1041,20 @@ tilde.colorMixing = function() {
 		d3.selectAll(".stars, .error_bar")
 			.style("mix-blend-mode","normal")
 	}
+}
+
+tilde.drawDashes = function(speed) {
+	tilde.lvt = tilde.starWrapper.selectAll(".lvt")
+		.style("stroke","white")
+		.style("stroke-opacity","0")
+		.style("stroke-width",function(d){
+			return d.strokewidth()
+		})
+		.style("stroke-dasharray",function(d){
+			return d.dash() + "," + d.dash()
+		})
+		.transition("dash_draw").duration(speed).delay(150)
+		.style("stroke-opacity",".4")
 }
 
 tilde.toggleBHError = function() {
@@ -1393,6 +1423,25 @@ tilde.mousemove = function(d) {
 };
 
 tilde.mouseout = function(d) {
+	tilde.tooltip
+		.style("display", "none");
+};
+
+tilde.mergerTooltip = function(d) {
+	tilde.tooltip
+		.html("This is a merger between objects " + d.data.mergeName + "-A and " + d.data.mergeName + "-B<br><b>Chirp Mass</b>: " + chirp_masses[d.data.mergeName].mass)
+		.style("display", "inline-block")
+
+
+	var w = tilde.tooltip[0][0].offsetWidth/2,
+		h = tilde.tooltip[0][0].offsetHeight*1.1;
+
+	tilde.tooltip
+		.style("left", d3.event.pageX - w + "px")
+		.style("top", d3.event.pageY - h + "px");
+}
+
+tilde.mergerout = function(d) {
 	tilde.tooltip
 		.style("display", "none");
 };
@@ -1784,6 +1833,8 @@ tilde.drawMergers = function(callback_time) {
 		})
 		.style("stroke-opacity",0)
 		.style("opacity",0)
+		.on("mousemove",tilde.mergerTooltip)
+		.on("mouseout",tilde.mouseout)
     if (tilde.stars_in_front){
     	tilde.stars.moveToFront()
     } else {
