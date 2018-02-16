@@ -1,8 +1,3 @@
-// Electromagnetic data sources: 
-// NS: http://xtreme.as.arizona.edu/NeutronStars/data/pulsar_masses.dat
-// BH: https://stellarcollapse.org/sites/default/files/table.pdf
-// Gravitational Wave data sources are from LIGO-Virgo data releases: https://losc.ligo.org/events/
-
 var menu_tips = {
 	"view": "These options are different arrangements for the data points.",
 	"toggle": "These options allow some pieces of information to be turned on or off.",
@@ -34,6 +29,9 @@ var menu_tips = {
 	"color":"This option is most noticable if objects/error bars overlap. <b>Blend</b> lightens areas of overlap, making them easier to see. But for a cleaner look, try <b>None</b>",
 	"order":"This option only matters if <b>Color-mode</b> is set to <b>Plain</b>, as it determines whether error bars or data points are in front."
 }
+
+// Chirp masses are found from LIGO-Virgo data releases or from the LIGO-Virgo papers for each event:
+// https://losc.ligo.org/events/
 
 var chirp_masses = {
 	"GW150914":{
@@ -72,6 +70,11 @@ var chirp_masses = {
 		"error-high":0.004
 	}
 }
+
+// Electromagnetic data sources: 
+// NS: http://xtreme.as.arizona.edu/NeutronStars/data/pulsar_masses.dat
+// BH: https://stellarcollapse.org/sites/default/files/table.pdf
+// Gravitational Wave data sources are from LIGO-Virgo data releases: https://losc.ligo.org/events/
 
 var preset_data = [
 	/*{
