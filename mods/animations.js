@@ -25,7 +25,20 @@ tilde.animate.placeStars = function() {
 		.delay(2000)
 		.style("opacity",1)
 
-	tilde.notice.remove()
+	d3.selectAll(".title,.subtitle")
+		.classed("hidden",false)
+		.style("opacity",0)
+		.transition("type_label_fade_in")
+		.duration(4500)
+		.delay(500)
+		.style("opacity",1)
+
+	tilde.notice
+		.transition().duration(500)
+		.style("opacity",0)
+		.call(endall, function(){
+			tilde.notice.remove()
+		})
 
 	var mass_data = tilde.data;
 	var radial_data = tilde.radial_data;
@@ -53,12 +66,14 @@ tilde.animate.placeStars = function() {
 			//Make the cover circle shrink
 
 			tilde.starCoverRemoved = 1;
+			
 			d3.selectAll(".starCover")
 				.transition().duration(1800).delay(2200)
 				.attr("r", 0)
 				.call(endall, function() {
 					d3.selectAll(".starCover").remove()
-			 	});;
+			 	});
+			
 
 			d3.selectAll("#tilde .error_bar")
 		 		.transition("animate_bars").duration(star_timing)

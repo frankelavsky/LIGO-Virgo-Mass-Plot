@@ -158,6 +158,7 @@ tilde.init = function() {
 		.attr("y", function(){
 			return 0
 		})
+		.style("opacity",0)
 
 	title.append("text")
 		.attr("class", "subtitle")
@@ -175,6 +176,7 @@ tilde.init = function() {
 			var this_height = this.getBBox().height;
 			return title_height*1.1 - this_height
 		})
+		.style("opacity",0)
 
 	var svg = tilde.svg.append("g")
 		.attr("id","svg_parent_group")
@@ -491,7 +493,7 @@ tilde.init = function() {
 			}
 			return false
 		})
-		.attr("r", function(d) { return tilde.rScale(10) ;})
+		.attr("r", function(d) { return tilde.rScale(7) ;})
 		.attr("cx", width/2)
 		.attr("cy", height/2)
 		.style("opacity", 1)
@@ -499,20 +501,87 @@ tilde.init = function() {
 			d.circle_element = this;
 		});
 
+	//Radial gradient with the center at one end of the circle, as if illuminated from the side
+	var starCoverGradient = tilde.svg.append("defs")
+		.append("radialGradient")
+		.attr("id", function(d){ return "starCoverGradient" })
+		.attr("cx", "30%")
+		.attr("cy", "30%")
+		.attr("r", "65%");
+		
+	//Append the NS color stops
+	starCoverGradient.append("stop")
+		.attr("offset", "0%")
+		.classed("cover_gradient",true)
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#CD5C5C").brighter(1); 
+		});
+	starCoverGradient.append("stop")
+		.attr("offset", "50%")
+		.classed("cover_gradient",true)
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#CD5C5C"); 
+		});
+	starCoverGradient.append("stop")
+		.attr("offset",	"100%")
+		.classed("cover_gradient",true)
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#CD5C5C").darker(1.5); 
+		});
+
 	tilde.coverCirleRadius = tilde.rScale(100);
 
 	//Circle over all others
 	tilde.starWrapper.append("circle")
 		.attr("class", "starCover pulse")
-		.attr("r", tilde.rScale(10))
+		.attr("r", tilde.rScale(12))
 		.attr("cx", width/2)
 		.attr("cy", height/2)
-		.transition().duration(2000)
+		.attr("fill","url(#starCoverGradient)")
+		.transition().duration(5500).delay(500)
 		.attr("r", tilde.coverCirleRadius)
 		.call(endall, function(d){
-			tilde.unlock()
-			tilde.animate.placeStars()
-			//tilde.coverCircleShrink()
+			tilde.notice
+				.transition("fade_notice")
+				.duration(1200)
+				.style("opacity",0)
+				.call(endall, function(d){
+					tilde.notice
+						.html("when stars <span id='death' style='opacity:0'><b>die</b>?</span>")
+						.style("left", function(d){
+							var this_width = this.offsetWidth/2;
+							return width/2 + margin.left - this_width + "px"
+						})
+						.style("top", function(d){
+							var this_height = this.offsetHeight,
+								title_height = d3.select("#title").node().offsetHeight;
+							return height/2 + margin.top - this_height*.8 - tilde.coverCirleRadius*1.3 + "px"
+						})
+						.transition("notice_shift")
+						.duration(1000)
+						.style("opacity",1)
+						.call(endall,function(d){
+							d3.select("#death")
+								.transition("death")
+								.duration(500).delay(250)
+								.style("opacity",1)
+						})
+				})
+
+			d3.selectAll(".cover_gradient")
+				.transition("gradient").duration(2500)
+				.delay(2500)
+				.attr("stop-color", function(d) { 
+					return "#988FBF"; 
+				});		
+
+			d3.selectAll(".starCover")
+				.transition().duration(2500).delay(2500)
+				.call(endall,function(){
+					tilde.unlock()
+					tilde.animate.placeStars()
+					//tilde.coverCircleShrink()
+				})
 		});
 
 	var q_data = [{}]
@@ -717,20 +786,24 @@ tilde.init = function() {
 		.classed("hidden",true)
 
 	tilde.notice
+		.style("font-size",function(){
+			return tilde.bh_fs(tilde.width) + "px"
+		})	
 		.style("opacity",0)
 		.style("display", "inline-block")
-		.html("click to begin")
-		.style("left", width/2 + margin.left + tilde.coverCirleRadius*1.3 + "px")
+		.html("What are the <b>densest</b><br>objects that form...")
+		.style("left", function(d){
+			var this_width = this.offsetWidth/2;
+			return width/2 + margin.left - this_width + "px"
+		})
 		.style("top", function(d){
 			var this_height = this.offsetHeight,
 				title_height = d3.select("#title").node().offsetHeight;
-			return height/2 + margin.top - this_height/2 + "px"
+			return height/2 + margin.top - this_height - tilde.coverCirleRadius*1.3 + "px"
 		})
-		.transition("notice")
-		.duration(3500)
-		.delay(5000)
-		.style("opacity",0.6)
-
+		.transition("notice_in")
+		.duration(1000)
+		.style("opacity",1)
 
 	//Radial gradient with the center at one end of the circle, as if illuminated from the side
 	var starRoundGradient = tilde.svg.append("defs").selectAll("radialGradient")
@@ -761,7 +834,7 @@ tilde.init = function() {
 			return "#988FBF"; 
 		});
 
-	//Radial gradient with the center at one end of the circle, as if illuminated from the side
+	//Radial gradient with the center in the circle's center, as if illuminated from outside
 	var blackHoleGradient = tilde.svg.append("defs").selectAll("radialGradient")
 		.data(radial_data)
 		.enter().append("radialGradient")
@@ -770,7 +843,7 @@ tilde.init = function() {
 		.attr("cy", "50%")
 		.attr("r", "65%");
 		
-	//Append the NS color stops
+	//Append the BH color stops
 	blackHoleGradient.append("stop")
 		.attr("offset", "0%")
 		.classed("bh_radial_first",true)

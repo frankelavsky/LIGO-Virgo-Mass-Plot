@@ -45,7 +45,7 @@ body {
 }
 
 .starCover {
-	fill:#988FBF;
+	/*fill: indianred #988FBF*/;
 }
 
 #guide {
@@ -209,7 +209,7 @@ body {
 	color:#EAEAEA;
 	position: absolute;
 	display: none;
-	font-size: 30%;
+	font-size: 100%;
 	min-width: 80px;
 	height: auto;
 	background: none;
