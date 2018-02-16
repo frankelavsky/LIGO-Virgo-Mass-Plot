@@ -1045,16 +1045,16 @@ tilde.colorMixing = function() {
 
 tilde.drawDashes = function(speed) {
 	tilde.lvt = tilde.starWrapper.selectAll(".lvt")
-		.style("stroke","white")
+		.style("stroke","silver")
 		.style("stroke-opacity","0")
 		.style("stroke-width",function(d){
 			return d.strokewidth()
 		})
-		.style("stroke-dasharray",function(d){
+		.style("stroke-dasharray",function(d) {			
 			return d.dash() + "," + d.dash()
 		})
 		.transition("dash_draw").duration(speed).delay(150)
-		.style("stroke-opacity",".4")
+		.style("stroke-opacity",".7")
 }
 
 tilde.toggleBHError = function() {
