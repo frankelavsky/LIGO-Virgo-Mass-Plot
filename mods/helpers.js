@@ -508,28 +508,72 @@ tilde.init = function() {
 		.attr("cx", "30%")
 		.attr("cy", "30%")
 		.attr("r", "65%");
+	var starCoverGlow = tilde.svg.append("defs")
+		.append("radialGradient")
+		.attr("id", function(d){ return "starCoverGlow" })
+		.attr("cx", "50%")
+		.attr("cy", "50%")
+		.attr("r", "50%");
 		
-	//Append the NS color stops
+	//Append the cover color stops
 	starCoverGradient.append("stop")
 		.attr("offset", "0%")
 		.classed("cover_gradient",true)
 		.attr("stop-color", function(d) { 
-			return d3.rgb("#CD5C5C").brighter(1); 
+			return d3.rgb("#FFC300").brighter(1); 
 		});
 	starCoverGradient.append("stop")
 		.attr("offset", "50%")
 		.classed("cover_gradient",true)
 		.attr("stop-color", function(d) { 
-			return d3.rgb("#CD5C5C"); 
+			return d3.rgb("#FFC300"); 
 		});
 	starCoverGradient.append("stop")
 		.attr("offset",	"100%")
 		.classed("cover_gradient",true)
 		.attr("stop-color", function(d) { 
-			return d3.rgb("#CD5C5C").darker(1.5); 
+			return d3.rgb("#FFC300").darker(1.5); 
+		});
+	starCoverGlow.append("stop")
+		.attr("offset", "0%")
+		.classed("cover_gradient",true)
+		.attr('stop-opacity','0')
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#FFC300"); 
+		});
+	starCoverGlow.append("stop")
+		.attr("offset", "15%")
+		.classed("cover_gradient",true)
+		.attr('stop-opacity','0')
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#FFC300"); 
+		});
+	starCoverGlow.append("stop")
+		.attr("offset", "35%")
+		.classed("cover_gradient",true)
+		.attr('stop-opacity','.2')
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#FFC300"); 
+		});
+	starCoverGlow.append("stop")
+		.attr("offset",	"100%")
+		.classed("cover_gradient",true)
+		.attr('stop-opacity','0')
+		.attr("stop-color", function(d) { 
+			return d3.rgb("#FFC300").brighter(2); 
 		});
 
 	tilde.coverCirleRadius = tilde.rScale(100);
+
+	//Glow behind cover circle
+	tilde.starWrapper.append("circle")
+		.attr("class", "starCover starGlow")
+		.attr("r", tilde.rScale(18))
+		.attr("cx", width/2)
+		.attr("cy", height/2)
+		.attr("fill","url(#starCoverGlow)")
+		.transition().duration(5500).delay(500)
+		.attr("r", tilde.coverCirleRadius*6)
 
 	//Circle over all others
 	tilde.starWrapper.append("circle")
@@ -546,6 +590,7 @@ tilde.init = function() {
 				.duration(1200)
 				.style("opacity",0)
 				.call(endall, function(d){
+					
 					tilde.notice
 						.html("when stars <span id='death' style='opacity:0'><b>die</b>?</span>")
 						.style("left", function(d){
@@ -561,6 +606,11 @@ tilde.init = function() {
 						.duration(1000)
 						.style("opacity",1)
 						.call(endall,function(d){
+							d3.select('.starGlow')
+								.transition('glowdeath')
+								.duration(2500).delay(300)
+								.style('opacity',0)
+								.attr("r", tilde.coverCirleRadius*3.5)
 							d3.select("#death")
 								.transition("death")
 								.duration(500).delay(250)
@@ -609,6 +659,7 @@ tilde.init = function() {
 			}
 			return d.y()
 		})
+		.style('opacity',0)
 
 	tilde.starWrapper.append("text")
 		.attr("class","credits")
