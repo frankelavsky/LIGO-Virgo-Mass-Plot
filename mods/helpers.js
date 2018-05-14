@@ -1402,9 +1402,9 @@ tilde.toggleScheme = function() {
 	d3.select("#dark_scheme").classed("selected",!tilde.light_scheme)
 
 	d3.selectAll("body, #clusterChart")
-		.style("background",function(d){
+		.style("background-color",function(d){
 			if (tilde.light_scheme) {
-				return "none"
+				return "rgba(255,255,255,0)"
 			}
 			return "#101010"
 		})
