@@ -38,6 +38,8 @@ tilde.stellar_shading = true;
 tilde.zoomed = false;
 tilde.ns_shown = true;
 tilde.bh_shown = true;
+tilde.gw_shown = true;
+tilde.em_shown = true;
 tilde.ns_error_shown = false;
 tilde.bh_error_shown = false;
 tilde.ns_fs = d3.scale.linear()
@@ -246,21 +248,29 @@ tilde.init = function() {
 
 	tilde.res_ns = d3.scale.linear()
 		.domain([0,320,1920,3840])
-		.range([3,10,70,110])
+		.range([3,10,70,250])
 
 	tilde.y = tilde.log;
 
 	tilde.scale_status = "log";
 
 	tilde.rScale = function(d) {
-		var output;
+		var input = d
+		if (isNaN(input)) {
+			if (d.type.indexOf('NS') !== -1) {
+				console.log('NS')
+				input = 2.75
+			} else {
+				input = d.mass
+			}
+		}
 
 		var r = d3.scale.linear()
 			.domain([tilde.ns_max,tilde.ligo_max])
 			.range([tilde.res_ns(tilde.width),tilde.res_bh(tilde.width)])
 
 		if (tilde.scaled) {
-			return output = (Math.sqrt(d)/3.14)*r(tilde.y.domain()[1])
+			return (Math.sqrt(input)/3.14)*r(tilde.y.domain()[1])
 		}
 		return Math.sqrt(tilde.res_ns(tilde.width));
 	}
@@ -436,6 +446,18 @@ tilde.init = function() {
 			}
 			return false
 		})
+		.classed("gw_bar", function(d){
+			if (d.messenger !== "Electromagnetic") {
+				return true
+			}
+			return false
+		})
+		.classed("em_bar", function(d){
+			if (d.messenger === "Electromagnetic") {
+				return true
+			}
+			return false
+		})
 		.attr("width",function(d){
 			return d.error_width
 		})
@@ -476,6 +498,18 @@ tilde.init = function() {
 		})
 		.classed("ns", function(d){
 			if (d.type == "L_NS" || d.type == "NS") {
+				return true
+			}
+			return false
+		})
+		.classed("gw", function(d){
+			if (d.messenger !== "Electromagnetic") {
+				return true
+			}
+			return false
+		})
+		.classed("em", function(d){
+			if (d.messenger === "Electromagnetic") {
 				return true
 			}
 			return false
@@ -1051,64 +1085,76 @@ tilde.toggleNS = function() {
 	tilde.stop()
 	tilde.toggleSelect("toggle_ns")
 	tilde.ns_shown = !tilde.ns_shown;
-	if (!tilde.ns_shown) {
-		if (tilde.ns_error_shown) {
-			tilde.ns_shown = !tilde.ns_shown;
-			tilde.toggleNSError()
-			tilde.ns_shown = !tilde.ns_shown;
-		}
-		if (tilde.mergers_shown) {
-			d3.selectAll(".ns_merger")
-				.style("stroke-opacity",0)
-		}
-	} else {
-		if (tilde.mergers_shown) {
-			d3.selectAll(".ns_merger")
-				.style("stroke-opacity",0.3)
-		}
-	}
-	d3.selectAll(".ns")
-		.style("opacity",function(d){
-			if (d3.select(this).style("opacity") == 0) {
-				d3.select(".question_mark")
-					.classed("hidden",false)
-				return d.opacity()
-			}
-			d3.select(".question_mark")
-				.classed("hidden",true)
-			return 0
-		})
+	tilde.checkToggles()
 }
 
 tilde.toggleBH = function() {
 	tilde.stop()
 	tilde.toggleSelect("toggle_bh")
 	tilde.bh_shown = !tilde.bh_shown;
-	if (!tilde.bh_shown) {
-		if (tilde.bh_error_shown) {
-			tilde.bh_shown = !tilde.bh_shown;
-			tilde.toggleBHError()
-			tilde.bh_shown = !tilde.bh_shown;
-		}
-		if (tilde.mergers_shown) {
-			console.log("trying to HIDE mergers")
-			d3.selectAll(".bh_merger")
-				.style("stroke-opacity",0)
-		}
-	} else {
-		if (tilde.mergers_shown) {
-			console.log("trying to SHOW mergers")
-			d3.selectAll(".bh_merger")
-				.style("stroke-opacity",0.3)
-		}
-	}
-	d3.selectAll(".bh")
-		.style("opacity",function(d){
-			if (d3.select(this).style("opacity") == 0) {
-				return d.opacity()
+	tilde.checkToggles()
+}
+
+tilde.toggleGW = function() {
+	tilde.stop()
+	tilde.toggleSelect("toggle_gw")
+	tilde.gw_shown = !tilde.gw_shown;
+	tilde.checkToggles()
+}
+
+tilde.toggleEM = function() {
+	tilde.stop()
+	tilde.toggleSelect("toggle_em")
+	tilde.em_shown = !tilde.em_shown;
+	tilde.checkToggles()
+}
+
+tilde.checkToggles = function() {
+	tilde.stars
+		.style('opacity', function(d,i){
+			var my_type = ''
+			var my_messenger = ''
+			if (d3.select(this).classed('ns')){
+				my_type = 'ns'
+			} else {
+				my_type = 'bh'
 			}
-			return 0
+			if (d3.select(this).classed('em')){
+				my_messenger = 'em'
+			} else {
+				my_messenger = 'gw'
+			}
+			if (tilde[my_type+'_shown'] && tilde[my_messenger+'_shown']) {
+				if (tilde[my_type+'_error_shown']) {
+					d3.select(d.bar_element)
+						.style('opacity',function(dd,ii){
+							return dd.opacity()
+						})
+				} else {
+					d3.select(d.bar_element)
+						.style('opacity',0)
+				}
+				if (my_messenger === 'gw') {
+					d3.selectAll("."+my_type+"_merger")
+						.style("stroke-opacity",function(dd,ii){
+							if (tilde.mergers_shown) {
+								return 0.3
+							}
+							return 0
+						})
+				}
+				return d.opacity()
+			} else {
+				d3.select(d.bar_element)
+					.style('opacity',0)
+				if (my_messenger === 'gw') {
+					d3.selectAll("."+my_type+"_merger")
+						.style("stroke-opacity",0)
+				}
+				return 0
+			}
 		})
+	
 }
 
 tilde.toggleRadius = function() {
@@ -1124,7 +1170,7 @@ tilde.toggleRadius = function() {
 		.transition("radius_resize")
 		.duration(speed)
 		.attr("r",function(d){
-			return tilde.rScale(d.mass)
+			return tilde.rScale(d)
 		})
 		.call(endall,function(d){
 			tilde.drawMergers()
@@ -1186,13 +1232,7 @@ tilde.toggleBHError = function() {
 	if (tilde.bh_shown) {
 		tilde.toggleSelect("toggle_bh_error")
 		tilde.bh_error_shown = !tilde.bh_error_shown;
-		d3.selectAll(".bh_bar")
-			.style("opacity",function(){
-				if (d3.select(this).style("opacity") == 0) {
-					return 0.9
-				}
-				return 0
-			})
+		tilde.checkToggles()
 	}
 }
 
@@ -1201,13 +1241,7 @@ tilde.toggleNSError = function() {
 	if (tilde.ns_shown) {
 		tilde.toggleSelect("toggle_ns_error")
 		tilde.ns_error_shown = !tilde.ns_error_shown;
-		d3.selectAll(".ns_bar")
-			.style("opacity",function(){
-				if (d3.select(this).style("opacity") == 0) {
-					return 0.9
-				}
-				return 0
-			})
+		tilde.checkToggles()
 	}
 }
 
@@ -1387,11 +1421,7 @@ tilde.toggleMerger = function() {
 	tilde.stop()
 	tilde.toggleSelect("toggle_merger")
 	tilde.mergers_shown = !tilde.mergers_shown;
-	if (tilde.mergers_shown) {
-		tilde.showMergers(0)
-	} else {
-		tilde.hideMergers(0)
-	}
+	tilde.checkToggles()
 }
 
 tilde.toggleScheme = function() {
@@ -2000,7 +2030,6 @@ tilde.showMergers = function(time) {
 			.style("opacity",1)
 	}
 }
-
 tilde.bindOptions = function() {
 	d3.select(".menu_wrapper")
 		.on("click",tilde.toggleMenu)
@@ -2041,6 +2070,12 @@ tilde.bindOptions = function() {
 
 	d3.select("#toggle_ns")
 		.on("click",tilde.toggleNS)
+
+	d3.select("#toggle_gw")
+		.on("click",tilde.toggleGW)
+
+	d3.select("#toggle_em")
+		.on("click",tilde.toggleEM)
 
 	d3.select("#toggle_title")
 		.on("click",tilde.toggleTitle)

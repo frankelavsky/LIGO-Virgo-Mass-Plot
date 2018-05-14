@@ -12,6 +12,8 @@ var menu_tips = {
 	"view_cat_two":"A zoomed-in view of only <i>Neutron Stars</i> and their types. You can <b>Zoom</b> back out and also turn <i>Black Holes</i> back on in the <b>TOGGLE</b> menu.",
 	"toggle_bh":"Toggles <i>Black Holes</i>.",
 	"toggle_ns":"Toggles <i>Neutron Stars</i>.",
+	"toggle_gw":"Toggles stellar masses detected by <i>Gravitational Waves</i>.",
+	"toggle_em":"Toggles stellar masses detected by <i>Electromagnetic Messengers</i>.",
 	"toggle_title":"Toggles the title.",
 	"toggle_labels":"Toggles labels, which are on the <b>Categories</b> and <b>Full</b> views.",
 	"toggle_axis":"Toggles the axis.",

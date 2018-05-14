@@ -99,7 +99,7 @@ tilde.animate.placeStars = function() {
 					return	i*20; 
 				})
 				.attr("r", function(d) {
-					d.radius = tilde.rScale(d.mass);
+					d.radius = tilde.rScale(d);
 					return d.radius;
 				})
 				.attr("cy", function(d,i) {
@@ -776,7 +776,7 @@ tilde.animate.rescaleView = function(reset,callback) {
 			return	i*15; 
 		})
 		.attr("r", function(d) {
-			d.radius = tilde.rScale(d.mass);
+			d.radius = tilde.rScale(d);
 			return d.radius;
 		})
 		.attr("cy", function(d){
