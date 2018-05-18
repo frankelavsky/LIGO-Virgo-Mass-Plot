@@ -16,6 +16,8 @@ tilde.tallheight = tilde.windowwidth/1.45; // For excellent image output
 
 tilde.windowheight = tilde.download_large ? tilde.tallheight : tilde.shortheight
 
+tilde.intro_timing = 1
+
 d3.select("#web_size").classed("selected",!tilde.download_large)
 d3.select("#large_size").classed("selected",tilde.download_large)
 
@@ -258,7 +260,6 @@ tilde.init = function() {
 		var input = d
 		if (isNaN(input)) {
 			if (d.type.indexOf('NS') !== -1) {
-				console.log('NS')
 				input = 2.75
 			} else {
 				input = d.mass
@@ -364,6 +365,15 @@ tilde.init = function() {
 			return d.y;
 		})
 		.interpolate("basis");
+
+	tilde.arrow = d3.svg.line()
+		.x(function(d) { 
+			return d.x; 
+		})
+		.y(function(d) { 
+			return d.y;
+		})
+		.interpolate("linear")
 
 	tilde.gapWrapper = svg.append("g")
 		.attr("id", "gapWrapper")
@@ -606,7 +616,7 @@ tilde.init = function() {
 		.attr("cx", width/2)
 		.attr("cy", height/2)
 		.attr("fill","url(#starCoverGlow)")
-		.transition().duration(5500).delay(500)
+		.transition().duration(5500*tilde.intro_timing).delay(500*tilde.intro_timing)
 		.attr("r", tilde.coverCirleRadius*6)
 
 	//Circle over all others
@@ -616,12 +626,12 @@ tilde.init = function() {
 		.attr("cx", width/2)
 		.attr("cy", height/2)
 		.attr("fill","url(#starCoverGradient)")
-		.transition().duration(5500).delay(500)
+		.transition().duration(5500*tilde.intro_timing).delay(500*tilde.intro_timing)
 		.attr("r", tilde.coverCirleRadius)
 		.call(endall, function(d){
 			tilde.notice
 				.transition("fade_notice")
-				.duration(1200)
+				.duration(1200*tilde.intro_timing)
 				.style("opacity",0)
 				.call(endall, function(d){
 					
@@ -637,30 +647,30 @@ tilde.init = function() {
 							return height/2 + margin.top - this_height*.8 - tilde.coverCirleRadius*1.3 + "px"
 						})
 						.transition("notice_shift")
-						.duration(1000)
+						.duration(1000*tilde.intro_timing)
 						.style("opacity",1)
 						.call(endall,function(d){
 							d3.select('.starGlow')
 								.transition('glowdeath')
-								.duration(2500).delay(300)
+								.duration(2500*tilde.intro_timing).delay(300*tilde.intro_timing)
 								.style('opacity',0)
 								.attr("r", tilde.coverCirleRadius*3.5)
 							d3.select("#death")
 								.transition("death")
-								.duration(500).delay(250)
+								.duration(500*tilde.intro_timing).delay(250)
 								.style("opacity",1)
 						})
 				})
 
 			d3.selectAll(".cover_gradient")
-				.transition("gradient").duration(2500)
-				.delay(2500)
+				.transition("gradient").duration(2500*tilde.intro_timing)
+				.delay(2500*tilde.intro_timing)
 				.attr("stop-color", function(d) { 
 					return "#988FBF"; 
 				});		
 
 			d3.selectAll(".starCover")
-				.transition().duration(2500).delay(2500)
+				.transition().duration(2500*tilde.intro_timing).delay(2500*tilde.intro_timing)
 				.call(endall,function(){
 					tilde.unlock()
 					tilde.animate.placeStars()
@@ -1504,7 +1514,16 @@ tilde.toggleScheme = function() {
 		})
 	tilde.starWrapper.selectAll(".merger")
 		.attr("stroke", function(dd) { 
-			return dd.data.color() 
+			if (!dd.arrow) {
+				return dd.color()
+			}
+			return 'none'
+		})
+		.attr('fill',function(dd){
+			if (dd.arrow) {
+				return 'gray'
+			}
+			return 'none'
 		})
 }
 
@@ -1583,7 +1602,7 @@ tilde.mouseout = function(d) {
 
 tilde.mergerTooltip = function(d) {
 	tilde.tooltip
-		.html("This is a merger between objects " + d.data.mergeName + "-A and " + d.data.mergeName + "-B<br><b>Chirp Mass</b>: " + chirp_masses[d.data.mergeName].mass)
+		.html("This is a merger between objects " + d.mergeName + "-A and " + d.mergeName + "-B<br><b>Chirp Mass</b>: " + chirp_masses[d.mergeName].mass)
 		.style("display", "inline-block")
 
 
@@ -1793,9 +1812,10 @@ tilde.createArrowData = function() {
 					},
 					values: [{},{},{},{},{}]
 				}
-				var arrowhead_right = {
+				var arrowhead = {
 					name: mergeName,
 					type: d.type,
+					arrow: true,
 					mergeName: mergeName,
 					thickness: 1+target.attr("r")*0.2,
 					centered:false,
@@ -1805,21 +1825,7 @@ tilde.createArrowData = function() {
 						}
 						return "silver"
 					},
-					values: [{},{}]
-				}
-				var arrowhead_left = {
-					name: mergeName,
-					type: d.type,
-					mergeName: mergeName,
-					thickness: 1+target.attr("r")*0.2,
-					centered:false,
-					color: function() {
-						if (tilde.light_scheme) {
-							return "grey"
-						}
-						return "silver"
-					},
-					values: [{},{}]
+					values: [{},{},{}]
 				}
 				var s_x = +source.attr("cx"),
 					t_x = +target.attr("cx"),
@@ -1831,29 +1837,26 @@ tilde.createArrowData = function() {
 					v = arrow_data.values;
 				var offset = Math.sqrt(Math.pow(t_t/2,2)/2)
 				v[3].x = t_x
-				v[3].y = t_y + t_r*2+t_t
+				v[3].y = t_y + t_r*2+t_t*2.5
 				v[4].x = t_x
-				v[4].y = t_y + t_r*1.1+t_t
-				arrowhead_right.name += "c"
-				arrowhead_right.values = [
+				v[4].y = t_y + t_r*1.1+t_t*2.5
+				
+				arrowhead.values = [
 					{
-						x:v[4].x + offset,
-						y:v[4].y - offset - t_t/2
+						x:v[4].x,
+						y:v[4].y - t_t*3
 					},
 					{
-						x:v[4].x - t_t*2,
-						y:v[4].y + t_t*1.5
-					}
-				]
-				arrowhead_left.name += "d"
-				arrowhead_left.values = [
-					{
-						x:v[4].x - offset,
-						y:v[4].y - offset - t_t/2
+						x:v[4].x - t_t*1.5,
+						y:v[4].y + t_t*.5
 					},
 					{
-						x:v[4].x + t_t*2,
-						y:v[4].y + t_t*1.5
+						x:v[4].x,
+						y:v[4].y - t_t*.5
+					},
+					{
+						x:v[4].x + t_t*1.5,
+						y:v[4].y + t_t*.5
 					}
 				]
 				if (t_x > s_x) {
@@ -1867,8 +1870,7 @@ tilde.createArrowData = function() {
 						var diff = s_x + s_r - t_x - t_r;
 						v[2].x -= diff/2
 					}
-					tilde.merger_data.push(arrowhead_right)
-					tilde.merger_data.push(arrowhead_left)
+					tilde.merger_data.push(arrowhead)
 				} else if (t_x < s_x) {
 					v[0].x = s_x - s_r*0.8
 					v[0].y = s_y + s_r*0.8
@@ -1880,8 +1882,7 @@ tilde.createArrowData = function() {
 						var diff = t_x + t_r - s_x - s_r;
 						v[2].x += diff/2
 					}
-					tilde.merger_data.push(arrowhead_right)
-					tilde.merger_data.push(arrowhead_left)
+					tilde.merger_data.push(arrowhead)
 				} else {
 					v[0].x = s_x - s_r*1.1
 					v[0].y = s_y
@@ -1916,79 +1917,61 @@ tilde.drawMergers = function(callback_time) {
 	}
 	tilde.createArrowData()
 	//place the merger arrows
-	tilde.mergers = tilde.starWrapper.selectAll(".merger")
-		.data(tilde.merger_data)
-		.enter().append("svg:path")
-		.attr("class","merger")
-		.attr("d", function(dd) {
-			return tilde.line(dd.values) 
-		})
-		.attr("stroke", function(dd) { 
-			return dd.color() 
-		})
-		.attr("stroke-width", function(dd){
-			return dd.thickness
-		})
-		.style("stroke-opacity",0)
-
 	var combined_lines = [];
 	var checked = {};
-
-	tilde.mergers.each(function(d,i) { 
-		if (!checked[d.name]) {
-			var item = {}
-			checked[d.name] = 1
-			item.path = ""
-			item.path += d3.select(this).attr("d"); 
-			tilde.mergers.each(function(dd,ii) {
-				if (!checked[dd.name]) {
-					var firstName = d.name.replace(/a|b|c|d/g,"")
-					var secondName = dd.name.replace(/a|b|c|d/g,"")
-					if (firstName == secondName){
-						checked[dd.name] = 1
-						item.path += d3.select(this).attr("d"); 
-						if (d.mass > dd.mass){
-							item.data = d
-						} else {
-							item.data = dd
-						}
-						combined_lines.push(item)
-					}
-				}
-			})
-		}
-	});
-	tilde.mergers.remove()
-	tilde.merger_data = combined_lines;
 	tilde.mergers = tilde.starWrapper.selectAll(".merger")
 		.data(tilde.merger_data)
 		.enter().append("svg:path")
 		.attr("class","merger")
 		.classed("bh_merger", function(dd){
-			if (dd.data.type == "L_BH") {
+			if (dd.type == "L_BH") {
 				return true
 			}
 			return false
 		})
 		.classed("ns_merger", function(dd){
-			if (dd.data.type == "L_NS") {
+			if (dd.type == "L_NS") {
 				return true
 			}
 			return false
 		})
 		.attr("d", function(dd) {
+			dd.path = tilde.line(dd.values)
+			if (dd.arrow) {
+				var s = tilde.arrow(dd.values) + ' Z'
+				var nth = 0;
+				s = s.replace(/L/g, function (match, i, original) {
+				    nth++;
+				    return (nth === 2) ? " Q " : (nth === 3) ? " " : ' L';
+				});
+				s = s.replace(/,/g, ' ');
+				dd.path = s
+			}
 			return dd.path
 		})
 		.attr("stroke", function(dd) { 
-			return dd.data.color() 
+			if (!dd.arrow) {
+				return dd.color()
+			}
+			return 'none'
+		})
+		.attr('fill',function(dd){
+			if (dd.arrow) {
+				return 'gray'
+			}
+			return 'none'
 		})
 		.attr("stroke-width", function(dd){
-			return dd.data.thickness
+			if (dd.arrow) {
+				return 0
+			}
+			return dd.thickness
 		})
 		.style("stroke-opacity",0)
 		.style("opacity",0)
 		.on("mousemove",tilde.mergerTooltip)
 		.on("mouseout",tilde.mouseout)
+
     if (tilde.stars_in_front){
     	tilde.stars.moveToFront()
     } else {
@@ -2020,14 +2003,24 @@ tilde.showMergers = function(time) {
 		d3.selectAll(".bh_merger")
 			.transition()
 			.duration(transition)
-			.style("stroke-opacity",.25)
-			.style("opacity",1)
+			.style("stroke-opacity",.33)
+			.style("opacity",function(d){
+				if (d.arrow) {
+					return 1
+				}
+				return 1
+			})
 	} else {
 		tilde.starWrapper.selectAll(".merger")
 			.transition()
 			.duration(transition)
-			.style("stroke-opacity",.25)
-			.style("opacity",1)
+			.style("stroke-opacity",.33)
+			.style("opacity",function(d){
+				if (d.arrow) {
+					return 1
+				}
+				return 1
+			})
 	}
 }
 tilde.bindOptions = function() {

@@ -197,9 +197,9 @@ body {
 }
 
 .merger {
-	fill:none;
 	shape-rendering: geometricPrecision;
 	isolation: isolate;
+	mix-blend-mode: screen;
 }
 
 .axis path {
