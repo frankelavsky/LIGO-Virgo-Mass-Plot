@@ -29,7 +29,7 @@ var menu_tips = {
 	"radius":"(<i>Scientific</i>) With <b>Scale</b>, the radius of the data points are scaled to mass. Setting radius to <b>Equal</b> makes them all the same size - nice for scientific purposes or to make a little room.",
 	"shading":"<b>Stellar</b> will show each object with an artistic rendition: holes or spheres. But <b>Plain</b> simply makes all the data points flat.",
 	"color":"This option is most noticable if objects/error bars overlap. <b>Blend</b> lightens areas of overlap, making them easier to see. But for a cleaner look, try <b>None</b>",
-	"order":"This option only matters if <b>Color-mode</b> is set to <b>Plain</b>, as it determines whether error bars or data points are in front."
+	"order":"This option only matters if <b>Color-mode</b> is set to <b>None</b>, as it determines whether error bars or data points are in front."
 }
 
 // Chirp masses are found from LIGO-Virgo data releases or from the LIGO-Virgo papers for each event:

@@ -16,7 +16,7 @@ tilde.tallheight = tilde.windowwidth/1.45; // For excellent image output
 
 tilde.windowheight = tilde.download_large ? tilde.tallheight : tilde.shortheight
 
-tilde.intro_timing = 1
+tilde.intro_timing = 0
 
 d3.select("#web_size").classed("selected",!tilde.download_large)
 d3.select("#large_size").classed("selected",tilde.download_large)
@@ -1034,12 +1034,12 @@ tilde.showBH = function(bool) {
 		}
 		if (tilde.mergers_shown) {
 			d3.selectAll(".bh_merger")
-				.style("stroke-opacity",0)
+				.attr("stroke-opacity",0)
 		}
 	} else {
 		if (tilde.mergers_shown) {
 			d3.selectAll(".bh_merger")
-				.style("stroke-opacity",0.3)
+				.attr("stroke-opacity",0.3)
 		}
 	}
 	d3.selectAll(".bh")
@@ -1067,13 +1067,13 @@ tilde.showNS = function(bool) {
 		if (tilde.mergers_shown) {
 			tilde.ns_shown = false
 			d3.selectAll(".ns_merger")
-				.style("stroke-opacity",0)
+				.attr("stroke-opacity",0)
 		}
 	} else {
 		tilde.ns_shown = true
 		if (tilde.mergers_shown) {
 			d3.selectAll(".ns_merger")
-				.style("stroke-opacity",0.3)
+				.attr("stroke-opacity",0.3)
 		}
 	}
 	d3.selectAll(".ns")
@@ -1146,9 +1146,15 @@ tilde.checkToggles = function() {
 				}
 				if (my_messenger === 'gw') {
 					d3.selectAll("."+my_type+"_merger")
-						.style("stroke-opacity",function(dd,ii){
+						.attr("stroke-opacity",function(dd,ii){
 							if (tilde.mergers_shown) {
 								return 0.3
+							}
+							return 0
+						})
+						.attr("fill-opacity",function(dd,ii){
+							if (tilde.mergers_shown) {
+								return 1
 							}
 							return 0
 						})
@@ -1159,7 +1165,8 @@ tilde.checkToggles = function() {
 					.style('opacity',0)
 				if (my_messenger === 'gw') {
 					d3.selectAll("."+my_type+"_merger")
-						.style("stroke-opacity",0)
+						.attr("stroke-opacity",0)
+						.attr("fill-opacity",0)
 				}
 				return 0
 			}
@@ -1226,7 +1233,7 @@ tilde.colorMixing = function() {
 tilde.drawDashes = function(speed) {
 	tilde.lvt = tilde.starWrapper.selectAll(".lvt")
 		.style("stroke","silver")
-		.style("stroke-opacity","0")
+		.attr("stroke-opacity","0")
 		.style("stroke-width",function(d){
 			return d.strokewidth()
 		})
@@ -1234,7 +1241,7 @@ tilde.drawDashes = function(speed) {
 			return d.dash() + "," + d.dash()
 		})
 		.transition("dash_draw").duration(speed).delay(150)
-		.style("stroke-opacity",".7")
+		.attr("stroke-opacity",".7")
 }
 
 tilde.toggleBHError = function() {
@@ -1967,7 +1974,8 @@ tilde.drawMergers = function(callback_time) {
 			}
 			return dd.thickness
 		})
-		.style("stroke-opacity",0)
+		.attr("stroke-opacity",0)
+		.attr("fill-opacity",0)
 		.style("opacity",0)
 		.on("mousemove",tilde.mergerTooltip)
 		.on("mouseout",tilde.mouseout)
@@ -1991,8 +1999,8 @@ tilde.hideMergers = function(time) {
 	tilde.starWrapper.selectAll(".merger")
 		.transition()
 		.duration(transition)
-		.style("stroke-opacity",0)
-		.style("opacity",0)
+		.attr("stroke-opacity",0)
+		.attr("fill-opacity",0)
 }
 tilde.showMergers = function(time) {
 	var transition = time;
@@ -2003,19 +2011,21 @@ tilde.showMergers = function(time) {
 		d3.selectAll(".bh_merger")
 			.transition()
 			.duration(transition)
-			.style("stroke-opacity",.33)
-			.style("opacity",function(d){
+			.style("opacity",1)
+			.attr("stroke-opacity",.33)
+			.attr("fill-opacity",function(d){
 				if (d.arrow) {
 					return 1
 				}
 				return 1
 			})
 	} else {
-		tilde.starWrapper.selectAll(".merger")
-			.transition()
+		tilde.mergers
+			.transition('show_mergers')
 			.duration(transition)
-			.style("stroke-opacity",.33)
-			.style("opacity",function(d){
+			.style("opacity",1)
+			.attr("stroke-opacity",.33)
+			.attr("fill-opacity",function(d){
 				if (d.arrow) {
 					return 1
 				}
