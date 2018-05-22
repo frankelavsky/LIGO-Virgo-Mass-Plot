@@ -16,7 +16,7 @@ tilde.tallheight = tilde.windowwidth/1.45; // For excellent image output
 
 tilde.windowheight = tilde.download_large ? tilde.tallheight : tilde.shortheight
 
-tilde.intro_timing = 0
+tilde.intro_timing = 1
 
 d3.select("#web_size").classed("selected",!tilde.download_large)
 d3.select("#large_size").classed("selected",tilde.download_large)
